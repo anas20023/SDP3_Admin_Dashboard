@@ -1,10 +1,10 @@
 import axios from "axios";
-
+import roles from "./userRoles";
 const handleLogin = async ({ email, password }) => {
   try {
     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { email, password }, { withCredentials: true });
     //console.log("Login successful:", res.data);
-    if (!(res.data?.role === "admin" || res.data?.role === "mod")) {
+    if (!roles.includes(res.data.role)) {
       throw new Error("Unauthorized to Access")
     }
     return res.data;

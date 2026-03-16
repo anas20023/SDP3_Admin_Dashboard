@@ -1,4 +1,5 @@
-const handleLogin= async ({email,password})=>{
-    console.log({email,password})
-}
-export default handleLogin
+const handleLogin = async ({ email, password }) => {
+  console.log('Logging in with:', { email, password });
+};
+
+export default handleLogin;

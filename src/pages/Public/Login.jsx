@@ -1,6 +1,7 @@
-/* eslint-disable react-hooks/immutability */
 import { useState } from 'react';
 import handleLogin from '../../utils/login';
+import { useToast } from '../../context/ToastContext';
+
 const Login = () => {
   document.title = 'SuggestMe | Login';
 
@@ -8,6 +9,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
 
   // Validation functions
   const validateEmail = (value) => {
@@ -18,7 +21,7 @@ const Login = () => {
 
   const validatePassword = (value) => {
     if (!value) return 'Password is required';
-    if (value.length < 8) return 'Password must be at least 6 characters';
+    if (value.length < 8) return 'Password must be at least 8 characters';
     return '';
   };
 
@@ -36,7 +39,7 @@ const Login = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate all fields on submit
@@ -45,13 +48,22 @@ const Login = () => {
 
     if (emailError || passwordError) {
       setErrors({ email: emailError, password: passwordError });
+      showToast('Please fix the errors in the form.', 'error');
       return;
     }
 
-    // If validation passes, proceed with login
-    console.log('Logging in with', { email, password });
-    // e.g., await loginApi({ email, password });
+    setIsLoading(true);
+    try {
+      await handleLogin({ email, password });
+      showToast('Login successful! Redirecting...', 'success');
+      // In a real app, you would redirect here
+    } catch (error) {
+      showToast(error.message || 'Login failed. Please check your credentials.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -71,12 +83,13 @@ const Login = () => {
               type="email"
               value={email}
               onChange={handleEmailChange}
+              disabled={isLoading}
               onBlur={() => setErrors((prev) => ({ ...prev, email: validateEmail(email) }))}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.email
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-              } focus:outline-none focus:ring-2 transition duration-200`}
+              } focus:outline-none focus:ring-2 transition duration-200 disabled:bg-gray-50 disabled:text-gray-500`}
               placeholder="you@example.com"
               aria-invalid={!!errors.email}
               aria-describedby="email-error"
@@ -98,12 +111,13 @@ const Login = () => {
               type="password"
               value={password}
               onChange={handlePasswordChange}
+              disabled={isLoading}
               onBlur={() => setErrors((prev) => ({ ...prev, password: validatePassword(password) }))}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.password
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-              } focus:outline-none focus:ring-2 transition duration-200`}
+              } focus:outline-none focus:ring-2 transition duration-200 disabled:bg-gray-50 disabled:text-gray-500`}
               placeholder="••••••••"
               aria-invalid={!!errors.password}
               aria-describedby="password-error"
@@ -118,10 +132,19 @@ const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full btn btn-primary"
           >
-            Sign in
+            {isLoading ? (
+              <>
+                <span className="loading loading-spinner loading-xs"></span>
+                <span>Signing in...</span>
+              </>
+            ) : (
+              'Sign in'
+            )}
           </button>
+
 
           {/* Helper links */}
           <div className="flex items-center justify-center mt-6 text-sm">

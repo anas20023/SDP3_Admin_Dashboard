@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import Login from "./pages/Public/Login"
 import Dashboard from "./pages/Private/Dashboard"
+import { ToastProvider } from "./context/ToastContext"
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -21,9 +22,9 @@ const App = () => {
         <p>Loading...</p>
   </div> 
   return (
-    <>
+    <ToastProvider>
       {isAuthenticated ? <Dashboard /> : <Login />}
-    </>
+    </ToastProvider>
   )
 }
 

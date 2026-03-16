@@ -1,30 +1,34 @@
-import { useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Login from "./pages/Public/Login"
 import Dashboard from "./pages/Private/Dashboard"
 import { ToastProvider } from "./context/ToastContext"
+import { AuthProvider } from "./context/AuthContext"
+import ProtectedRoute from "./components/ProtectedRoute"
+import PublicRoute from "./components/PublicRoute"
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Check if token exists in cookies
-    const token = document.cookie
-      .split("; ")
-      .find(row => row.startsWith("token="))
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsAuthenticated(!!token)
-    setLoading(false)
-  }, [])
-
-  if (loading) return <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col justify-center items-center gap-2">
-        <span className="loading loading-infinity loading-xl"></span>
-        <p>Loading...</p>
-  </div> 
   return (
-    <ToastProvider>
-      {isAuthenticated ? <Dashboard /> : <Login />}
-    </ToastProvider>
+    <BrowserRouter>
+      <ToastProvider>
+        <AuthProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+            </Route>
+
+            {/* Private Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+
+            {/* Fallback Routes */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </AuthProvider>
+      </ToastProvider>
+    </BrowserRouter>
   )
 }
 

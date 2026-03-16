@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import handleLogin from '../../utils/login';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
   document.title = 'SuggestMe | Login';
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   // State for form fields and errors
   const [email, setEmail] = useState('');
@@ -54,9 +58,10 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      await handleLogin({ email, password });
+      const userData = await handleLogin({ email, password });
+      login(userData);
       showToast('Login successful! Redirecting...', 'success');
-      // In a real app, you would redirect here
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       showToast(error.message || 'Login failed. Please check your credentials.', 'error');
     } finally {

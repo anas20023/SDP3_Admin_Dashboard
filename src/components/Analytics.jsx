@@ -1,6 +1,8 @@
 import React from 'react'
+import { useOutletContext } from 'react-router-dom'
 
-const Analytics = ({role}) => {
+const Analytics = () => {
+    const { role } = useOutletContext();
     return (
         <div className="p-6 bg-base-100 flex-1">
             <div className="card bg-base-200 shadow-xl p-6">

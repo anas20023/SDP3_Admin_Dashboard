@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import roles from "../../utils/userRoles";
@@ -45,7 +45,7 @@ const Dashboard = () => {
         </nav>
 
         {/* Page Content */}
-        <Analytics role={roleConfig}/>
+        <Outlet context={{ role: roleConfig }} />
       </div>
 
       {/* Sidebar */}

@@ -6,7 +6,9 @@ import { AuthProvider } from "./context/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
 import UserManage from "./components/UserManage"
-
+import SubscriptionManage from "./components/SubscriptionManage"
+import SuggestionManage from "./components/SuggestionManage"
+import Analytics from "./components/Analytics"
 const App = () => {
   return (
     <BrowserRouter>
@@ -20,8 +22,12 @@ const App = () => {
 
             {/* Private Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/users" element={<UserManage/>} />
+              <Route path="/dashboard" element={<Dashboard />}>
+                <Route index element={<Analytics/>} />
+                <Route path="users" element={<UserManage/>} />
+                <Route path="subscriptions" element={<SubscriptionManage/>} />
+                <Route path="suggestions" element={<SuggestionManage/>} />
+              </Route>
             </Route>
 
             {/* Fallback Routes */}

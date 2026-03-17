@@ -43,7 +43,7 @@ const roles = {
 
     menu: [
       { to: "/dashboard", label: "Dashboard", icon: Home },
-      { to: "/dashboard/profile", label: "Profile", icon: User }
+      { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
     ]
   },
 
@@ -60,7 +60,8 @@ const roles = {
 
     menu: [
       { to: "/dashboard", label: "Dashboard", icon: Home },
-      { to: "/dashboard/reports", label: "Reports", icon: BarChart3 }
+      { to: "/dashboard/users", label: "Users", icon: Users },
+      { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
     ]
   },
 

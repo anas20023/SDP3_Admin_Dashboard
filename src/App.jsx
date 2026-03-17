@@ -5,6 +5,7 @@ import { ToastProvider } from "./context/ToastContext"
 import { AuthProvider } from "./context/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
+import UserManage from "./components/UserManage"
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             {/* Private Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/users" element={<UserManage/>} />
             </Route>
 
             {/* Fallback Routes */}

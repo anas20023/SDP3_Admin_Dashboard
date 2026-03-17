@@ -16,9 +16,9 @@ export const AuthProvider = ({ children }) => {
         const res = await axios.get(`${API}/auth/me`, {
           withCredentials: true
         });
-
+        // console.log(res.data)
         setIsAuthenticated(true);
-        setUser(res.data.user);
+        setUser(res.data);
       } catch {
         setIsAuthenticated(false);
         setUser(null);

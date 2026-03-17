@@ -9,7 +9,6 @@ const Analytics = () => {
         suggestionAnalysis: [],
         starAnalysis: []
     });
-    // pending, approved, rejected
     useEffect(() => {
         const fetchAnalysis = async () => {
             try {
@@ -25,17 +24,16 @@ const Analytics = () => {
 
         fetchAnalysis();
     }, []);
-    console.log(data.suggestionAnalysis)
     return (
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 bg-base-200 gap-2">
             <div className="md:col-span-5 bg-white px-1 py-4 rounded">
-                <UsersLast30Day data={data.userAnalytics} />
+                {data.userAnalytics && <UsersLast30Day data={data.userAnalytics} />}
             </div>
             <div className="md:col-span-3 bg-white px-1 py-4 rounded">
-                <SuggestionBarChart data={data.starAnalysis} />
+                {data.starAnalysis && <SuggestionBarChart data={data.starAnalysis} />}
             </div>
             <div className="md:col-span-2 bg-white px-1 py-4 rounded">
-                <ApprovalPieChart data={data.suggestionAnalysis} />
+                {data.suggestionAnalysis && <ApprovalPieChart data={data.suggestionAnalysis} />}
             </div>
         </div>
     );

@@ -51,7 +51,8 @@ const ApprovalPieChart = ({ data }) => {
                             }}
                             itemStyle={{ padding: '2px 0' }}
                         />
-                        {isMobile && <Legend verticalAlign="bottom" height={36}/>}
+                        {/* {isMobile && <Legend verticalAlign="bottom" height={36}/>} */}
+                        <Legend verticalAlign="bottom" height={36}/>
                     </PieChart>
                 </ResponsiveContainer>
             </div>

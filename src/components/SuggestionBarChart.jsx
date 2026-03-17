@@ -16,8 +16,7 @@ const SuggestionBarChart = ({ data }) => {
         return acc;
     }, {});
 
-    const chartData = Object.values(aggregated);
-
+    const chartData = Object.values(aggregated).sort((a, b) => (b.uploads - a.uploads));
     return (
         <>
             <p className="font-semibold text-slate-800 text-center py-2">
@@ -31,8 +30,8 @@ const SuggestionBarChart = ({ data }) => {
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="uploaded_by" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" allowDecimals={false} />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" allowDecimals={false} />
                 <Tooltip />
                 <Legend />
                 <Bar yAxisId="left" dataKey="uploads" fill="#8884d8" name="Uploads" />

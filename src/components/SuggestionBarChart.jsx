@@ -25,7 +25,9 @@ const SuggestionBarChart = ({ data }) => {
         return acc;
     }, {});
 
-    const chartData = Object.values(aggregated).sort((a, b) => (b.uploads - a.uploads));
+    const chartData = Object.values(aggregated).sort(
+        (a, b) => (a.uploads - b.uploads) || (a.stars - b.stars)
+    ).reverse();
     return (
         <>
             <p className="font-semibold text-slate-800 text-center py-2">
@@ -38,22 +40,22 @@ const SuggestionBarChart = ({ data }) => {
                         margin={{ top: 20, right: 30, left: 20, bottom: isMobile ? 60 : 30 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                            dataKey="uploaded_by" 
-                            angle={isMobile ? -45 : 0} 
-                            textAnchor={isMobile ? "end" : "middle"} 
+                        <XAxis
+                            dataKey="uploaded_by"
+                            angle={isMobile ? -45 : 0}
+                            textAnchor={isMobile ? "end" : "middle"}
                             interval={isMobile ? 0 : "preserveEnd"}
                             height={isMobile ? 70 : 40}
                             style={{ fontSize: isMobile ? '11px' : '13px', fontWeight: isMobile ? 400 : 500 }}
                         />
                         <YAxis yAxisId="left" orientation="left" stroke="#8884d8" allowDecimals={false} />
                         <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" allowDecimals={false} />
-                        <Tooltip 
-                            contentStyle={{ 
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                                borderRadius: '8px', 
-                                border: 'none', 
-                                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', 
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                borderRadius: '8px',
+                                border: 'none',
+                                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
                                 fontSize: '12px',
                                 padding: '8px 12px'
                             }}

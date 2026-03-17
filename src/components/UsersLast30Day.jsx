@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
     AreaChart,
     Area,
@@ -8,25 +9,59 @@ import {
     ResponsiveContainer
 } from 'recharts';
 const UsersLast30Day = ({ data }) => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <>
             <p className='font-semibold text-slate-800 text-center py-2'>User registrations in Last 30 Days</p>
-            <div >
-                <ResponsiveContainer width="100%" height="200" minWidth={400}>
+            <div className="w-full h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         title='Users in Last 30 Days'
                         data={data}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        margin={{ top: 20, right: 30, left: 0, bottom: isMobile ? 60 : 30 }}
                     >
-                        <CartesianGrid strokeDasharray="3 4" />
-                        <XAxis dataKey="display_date" />
-                        <YAxis allowDecimals={false} />
-                        <Tooltip />
+                        <defs>
+                            <linearGradient id="colorCc" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#f0f0f0" />
+                        <XAxis 
+                            dataKey="display_date" 
+                            angle={isMobile ? -45 : 0} 
+                            textAnchor={isMobile ? "end" : "middle"} 
+                            interval={isMobile ? Math.ceil(data.length / 8) : Math.ceil(data.length / 15)}
+                            height={isMobile ? 70 : 40}
+                            style={{ fontSize: isMobile ? '11px' : '13px' }}
+                            tick={{ fill: '#64748b' }}
+                        />
+                        <YAxis allowDecimals={false} tick={{ fill: '#64748b' }} stroke="none" />
+                        <Tooltip 
+                            contentStyle={{ 
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                                borderRadius: '8px', 
+                                border: 'none', 
+                                boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', 
+                                fontSize: '12px',
+                                padding: '8px 12px'
+                            }}
+                            itemStyle={{ padding: '2px 0' }}
+                        />
                         <Area
                             type="monotone"
                             dataKey="cc"
                             stroke="#8884d8"
-                            fill="#8884d8"
+                            fillOpacity={1}
+                            fill="url(#colorCc)"
+                            strokeWidth={2}
                         />
                     </AreaChart>
                 </ResponsiveContainer>

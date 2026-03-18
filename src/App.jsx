@@ -9,6 +9,7 @@ import UserManage from "./components/UserManage"
 import SubscriptionManage from "./components/SubscriptionManage"
 import SuggestionManage from "./components/SuggestionManage"
 import Analytics from "./components/Analytics"
+import TransactionManage from "./components/TransactionManage"
 const App = () => {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ const App = () => {
                 <Route path="users" element={<UserManage/>} />
                 <Route path="subscriptions" element={<SubscriptionManage/>} />
                 <Route path="suggestions" element={<SuggestionManage/>} />
+                <Route path="transactions" element={<TransactionManage/>} />
               </Route>
             </Route>
 

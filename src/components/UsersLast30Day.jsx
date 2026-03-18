@@ -24,7 +24,7 @@ const UsersLast30Day = ({ data }) => {
     return (
         <>
             <p className='font-semibold text-slate-800 text-center py-2'>User registrations in Last 30 Days</p>
-            <div className="w-full h-75 sm:h-87.5 lg:h-100">
+            <div className="w-full h-75">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         title='Users in Last 30 Days'

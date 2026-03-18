@@ -2,7 +2,7 @@ import {
   Home,
   Users,
   Settings,
-  BarChart3,
+  TableProperties ,
   User,
   Crown,
   Presentation,CircleDollarSign,
@@ -26,7 +26,8 @@ const roles = {
     menu: [
       { to: "/dashboard", label: "Dashboard", icon: Home },
       { to: "/dashboard/users", label: "Users", icon: Users },
-      { to: "/dashboard/subscriptions", label: "Subscriptions", icon: CircleDollarSign },
+      { to: "/dashboard/subscriptions", label: "Subscriptions", icon: TableProperties },
+      { to: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
       { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
     ]
   },

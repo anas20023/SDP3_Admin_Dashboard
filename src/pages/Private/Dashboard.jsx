@@ -59,7 +59,6 @@ const Dashboard = () => {
         <Outlet context={{ role: roleConfig }} />
       </div>
 
-      {/* Sidebar */}
       <div className="drawer-side z-50">
         <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
 

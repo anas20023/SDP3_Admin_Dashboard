@@ -1,6 +1,6 @@
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, ExternalLink, CheckCircle, XCircle } from "lucide-react";
 
-const SuggestionModal = ({ isOpen, onClose, suggestion, isLoading, onApprove, onReject }) => {
+const SuggestionModal = ({ isOpen, onClose, suggestion, isLoading }) => {
   if (!isOpen) return null;
 
   const formatDate = (date) => new Date(date).toLocaleDateString();
@@ -14,120 +14,105 @@ const SuggestionModal = ({ isOpen, onClose, suggestion, isLoading, onApprove, on
         className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-semibold">Suggestion Details</h2>
+        {/* Header - more compact */}
+        <div className="flex justify-between items-center px-4 py-3 border-b">
+          <h2 className="text-lg font-semibold">Suggestion Details</h2>
           <button
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Body */}
+        {/* Body - reduced padding */}
         <div className="p-4">
           {isLoading ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
             </div>
           ) : suggestion ? (
-            <div className="space-y-4">
-              {/* Two-column details */}
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              {/* Two-column details with smaller text and gap */}
+              <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <label className="text-sm text-gray-500">Course Code</label>
+                  <label className="text-xs text-gray-500">Course Code</label>
                   <p className="font-medium">{suggestion.course_code}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Course Name</label>
+                  <label className="text-xs text-gray-500">Course Name</label>
                   <p className="font-medium">{suggestion.course_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Department</label>
-                  <p>{suggestion.dept || "—"}</p>
+                  <label className="text-xs text-gray-500">Department</label>
+                  <p className="truncate">{suggestion.dept || "—"}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Intake</label>
+                  <label className="text-xs text-gray-500">Intake</label>
                   <p>{suggestion.intake || "—"}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Section</label>
+                  <label className="text-xs text-gray-500">Section</label>
                   <p>{suggestion.section || "—"}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Exam Type</label>
+                  <label className="text-xs text-gray-500">Exam Type</label>
                   <p>{suggestion.exam_type || "—"}</p>
                 </div>
               </div>
 
-              {/* Description */}
+              {/* Description with less padding */}
               <div>
-                <label className="text-sm text-gray-500">Description</label>
-                <p className="bg-gray-50 p-3 rounded-lg">{suggestion.description}</p>
+                <label className="text-xs text-gray-500">Description</label>
+                <p className="bg-gray-50 p-2 rounded text-sm">{suggestion.description}</p>
               </div>
 
-              {/* Attachment */}
+              {/* Attachment button - contains the URL */}
               {suggestion.attachment_url && (
                 <div>
-                  <label className="text-sm text-gray-500">Attachment</label>
+                  <label className="text-xs text-gray-500">Attachment</label>
                   <a
                     href={suggestion.attachment_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-blue-600 hover:underline break-all"
+                    className="inline-flex items-center gap-1 w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
                   >
-                    {suggestion.attachment_url}
+                    <span className="truncate flex-1">{suggestion.attachment_url}</span>
+                    <ExternalLink className="h-4 w-4 shrink-0" />
                   </a>
                 </div>
               )}
 
-              {/* Metadata grid */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Metadata grid - more compact */}
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
                 <div>
-                  <label className="text-sm text-gray-500">Stars</label>
+                  <label className="text-xs text-gray-500">Stars</label>
                   <p>{suggestion.stars || 0}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Votes</label>
+                  <label className="text-xs text-gray-500">Votes</label>
                   <p>{suggestion.votedBy?.length || 0}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Uploaded By</label>
-                  <p>{suggestion.uploaded_by?.name || suggestion.uploaded_by || "—"}</p>
+                  <label className="text-xs text-gray-500">Uploaded By</label>
+                  <p className="truncate">{suggestion.uploaded_by?.name || suggestion.uploaded_by || "—"}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Status</label>
+                  <label className="text-xs text-gray-500">Status</label>
                   <p className="capitalize">{suggestion.status}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Created</label>
+                  <label className="text-xs text-gray-500">Created</label>
                   <p>{formatDate(suggestion.createdAt)}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Last Updated</label>
+                  <label className="text-xs text-gray-500">Updated</label>
                   <p>{formatDate(suggestion.updatedAt)}</p>
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-4 border-t">
-                <button
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                  onClick={() => onApprove(suggestion._id)}
-                >
-                  Approve
-                </button>
-                <button
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                  onClick={() => onReject(suggestion._id)}
-                >
-                  Reject
-                </button>
-              </div>
             </div>
           ) : (
-            <p className="text-center text-gray-500">No details available.</p>
+            <p className="text-center text-gray-500 py-4 text-sm">No details available.</p>
           )}
         </div>
       </div>

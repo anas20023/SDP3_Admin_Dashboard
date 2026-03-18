@@ -170,8 +170,6 @@ const SuggestionManage = () => {
         onClose={closeModal}
         suggestion={selectedSuggestion}
         isLoading={detailsLoading}
-        onApprove={handleApprove}
-        onReject={handleReject}
       />
     </div>
   );

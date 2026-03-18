@@ -37,7 +37,7 @@ const SuggestionBarChart = ({ data }) => {
             <p className="font-semibold text-slate-800 text-center py-2">
                 Top Suggestion Uploading Users
             </p>
-            <div className="w-full h-75 sm:h-87.5 lg:h-100">
+            <div className="w-full h-87">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={chartData}

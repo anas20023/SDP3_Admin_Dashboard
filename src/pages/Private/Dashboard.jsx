@@ -27,6 +27,7 @@ const Dashboard = () => {
     try {
       await logout();
       toast.success("Logged out successfully");
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       toast.error("Logout failed. Please try again.");
       setIsLoggingOut(false);
@@ -192,7 +193,7 @@ const Dashboard = () => {
 
       {/* Full Page Loading Overlay during Logout */}
       {isLoggingOut && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-white/60 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4">
             <span className="loading loading-spinner loading-lg text-primary"></span>
             <p className="font-medium text-gray-700">Logging you out safely...</p>

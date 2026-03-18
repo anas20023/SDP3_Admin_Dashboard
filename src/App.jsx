@@ -1,15 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { lazy, Suspense } from "react"
 import Login from "./pages/Public/Login"
-import Dashboard from "./pages/Private/Dashboard"
 import { ToastProvider } from "./context/ToastContext"
 import { AuthProvider } from "./context/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
-import UserManage from "./components/UserManage"
-import SubscriptionManage from "./components/SubscriptionManage"
-import SuggestionManage from "./components/SuggestionManage"
-import Analytics from "./components/Analytics"
-import TransactionManage from "./components/TransactionManage"
+import DashboardRouteLoader from "./components/common/DashboardRouteLoader"
+
+const Dashboard = lazy(() => import("./pages/Private/Dashboard"))
+const Analytics = lazy(() => import("./components/Analytics"))
+const UserManage = lazy(() => import("./components/UserManage"))
+const SubscriptionManage = lazy(() => import("./components/SubscriptionManage"))
+const SuggestionManage = lazy(() => import("./components/SuggestionManage"))
+const TransactionManage = lazy(() => import("./components/TransactionManage"))
+
+const withDashboardLoader = (component) => (
+  <Suspense fallback={<DashboardRouteLoader />}>
+    {component}
+  </Suspense>
+)
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -23,12 +33,12 @@ const App = () => {
 
             {/* Private Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />}>
-                <Route index element={<Analytics/>} />
-                <Route path="users" element={<UserManage/>} />
-                <Route path="subscriptions" element={<SubscriptionManage/>} />
-                <Route path="suggestions" element={<SuggestionManage/>} />
-                <Route path="transactions" element={<TransactionManage/>} />
+              <Route path="/dashboard" element={withDashboardLoader(<Dashboard />)}>
+                <Route index element={withDashboardLoader(<Analytics />)} />
+                <Route path="users" element={withDashboardLoader(<UserManage />)} />
+                <Route path="subscriptions" element={withDashboardLoader(<SubscriptionManage />)} />
+                <Route path="suggestions" element={withDashboardLoader(<SuggestionManage />)} />
+                <Route path="transactions" element={withDashboardLoader(<TransactionManage />)} />
               </Route>
             </Route>
 

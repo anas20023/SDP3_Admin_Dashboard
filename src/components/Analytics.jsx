@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Users, Lightbulb, Clock, CheckCircle } from 'lucide-react';
 import { manageApi } from '../services/api';
 import UsersLast30Day from './UsersLast30Day';
 import ApprovalPieChart from './ApprovalPieChart';

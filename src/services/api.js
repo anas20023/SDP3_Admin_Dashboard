@@ -21,6 +21,12 @@ export const manageApi = {
   getSuggestionById: (id) => api.get(`/manage/suggestions/${id}`).then(res => res.data),
   updateSuggestion: (id, data) => api.put(`/manage/suggestions/${id}`, data).then(res => res.data),
   deleteSuggestion: (id) => api.delete(`/manage/suggestions/${id}`).then(res => res.data),
+
+  // Subscriptions
+  getSubscriptions: () => api.get('/subsc').then((res) => res.data),
+  createSubscription: (data) => api.post('/subsc', data).then((res) => res.data),
+  updateSubscription: (id, data) =>api.patch(`/subsc/${id}`, data).then((res) => res.data),
+  deleteSubscription: (id) => api.delete('/subsc/', { data: { id } }).then((res) => res.data),
 };
 
 export default api;

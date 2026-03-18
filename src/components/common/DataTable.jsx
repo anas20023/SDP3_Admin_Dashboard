@@ -53,7 +53,7 @@ const DataTable = ({ columns, data, onSearch, isLoading, actions }) => {
               </tr>
             ) : (
               data?.map((row, index) => (
-                <tr key={row.id || index} className="hover:bg-gray-50 transition-colors">
+                <tr key={row._id || row.id || index} className="hover:bg-gray-50 transition-colors">
                   {columns.map((col) => (
                     <td key={col.key} className="text-gray-700">
                       {col.render ? col.render(row[col.key], row) : row[col.key]}

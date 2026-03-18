@@ -60,13 +60,10 @@ const Dashboard = () => {
       </div>
 
       {/* Sidebar */}
-      <div
-        className={`drawer-side transition-all duration-300 ${collapsed ? "w-20" : "w-64"
-          }`}
-      >
-        <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
+      <div className="drawer-side z-50">
+        <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
 
-        <div className="flex min-h-full w-full flex-col bg-base-300 p-4">
+        <div className={`flex min-h-full flex-col bg-base-300 p-4 transition-all duration-300 ${collapsed ? "w-20 overflow-x-hidden" : "w-64"}`}>
           {/* User Profile */}
           {user && (
             <div className="mb-6 flex items-center gap-3 rounded-box bg-base-100 p-3">

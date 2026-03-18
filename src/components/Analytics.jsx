@@ -25,14 +25,14 @@ const Analytics = () => {
         fetchAnalysis();
     }, []);
     return (
-        <div className="p-4 grid grid-cols-1 md:grid-cols-5 bg-base-200 gap-2">
-            <div className="md:col-span-5 bg-white px-1 py-4 rounded">
+        <div className="p-2 sm:p-4 grid grid-cols-1 lg:grid-cols-5 bg-base-200 gap-2 sm:gap-4 lg:gap-6">
+            <div className="min-w-0 lg:col-span-5 bg-white p-2 sm:p-4 rounded-lg shadow-sm w-full">
                 {data.userAnalytics && <UsersLast30Day data={data.userAnalytics} />}
             </div>
-            <div className="md:col-span-3 bg-white px-1 py-4 rounded">
+            <div className="min-w-0 lg:col-span-3 bg-white p-2 sm:p-4 rounded-lg shadow-sm w-full">
                 {data.starAnalysis && <SuggestionBarChart data={data.starAnalysis} />}
             </div>
-            <div className="md:col-span-2 bg-white px-1 py-4 rounded">
+            <div className="min-w-0 lg:col-span-2 bg-white p-2 sm:p-4 rounded-lg shadow-sm w-full">
                 {data.suggestionAnalysis && <ApprovalPieChart data={data.suggestionAnalysis} />}
             </div>
         </div>

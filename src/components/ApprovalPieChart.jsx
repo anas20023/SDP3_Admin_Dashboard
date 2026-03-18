@@ -6,34 +6,36 @@ import {
 } from 'recharts';
 import { PieChart, Pie, Cell } from "recharts";
 const ApprovalPieChart = ({ data }) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const isXs = windowWidth < 480;
+    const isMd = windowWidth < 768;
     const COLORS = ["#facc15", "#22c55e", "#ef4444"];
     return (
         <>
             <p className="font-semibold text-slate-800 text-center py-2">
                 Suggestions  analysis
             </p>
-            <div className="w-full h-[300px]">
+            <div className="w-full h-[300px] sm:h-[350px] lg:h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                         <Pie
                             data={data}
                             dataKey="value"
                             nameKey="name"
                             cx="50%"
                             cy="50%"
-                            outerRadius={isMobile ? "80%" : "90%"}
-                            innerRadius={isMobile ? "40%" : "0%"}
-                            paddingAngle={isMobile ? 5 : 0}
+                            outerRadius={isXs ? "70%" : isMd ? "80%" : "70%"}
+                            innerRadius={isXs ? "40%" : isMd ? "45%" : "0%"}
+                            paddingAngle={isMd ? 5 : 0}
                             label={({ name, percent }) =>
-                                !isMobile ? `${name.charAt(0).toUpperCase() + name.slice(1)} ${(percent * 100).toFixed(0)}%` : ""
+                                !isMd && name ? `${name.charAt(0).toUpperCase() + name.slice(1)} ${(percent * 100).toFixed(0)}%` : ""
                             }
                         >
                             {(data).map((entry, index) => (

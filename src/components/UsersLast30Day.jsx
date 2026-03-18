@@ -9,23 +9,27 @@ import {
     ResponsiveContainer
 } from 'recharts';
 const UsersLast30Day = ({ data }) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const isXs = windowWidth < 480;
+    const isMd = windowWidth < 768;
+    const isLessThan1440 = windowWidth <= 1440;
+
     return (
         <>
             <p className='font-semibold text-slate-800 text-center py-2'>User registrations in Last 30 Days</p>
-            <div className="w-full h-[300px]">
+            <div className="w-full h-75 sm:h-87.5 lg:h-100">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         title='Users in Last 30 Days'
                         data={data}
-                        margin={{ top: 20, right: 30, left: 0, bottom: isMobile ? 60 : 30 }}
+                        margin={{ top: 20, right: 10, left: 0, bottom: isLessThan1440 ? 70 : 30 }}
                     >
                         <defs>
                             <linearGradient id="colorCc" x1="0" y1="0" x2="0" y2="1">
@@ -36,11 +40,11 @@ const UsersLast30Day = ({ data }) => {
                         <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#f0f0f0" />
                         <XAxis 
                             dataKey="display_date" 
-                            angle={isMobile ? -45 : 0} 
-                            textAnchor={isMobile ? "end" : "middle"} 
-                            interval={isMobile ? Math.ceil(data.length / 8) : Math.ceil(data.length / 15)}
-                            height={isMobile ? 70 : 40}
-                            style={{ fontSize: isMobile ? '11px' : '13px' }}
+                            angle={isLessThan1440 ? -45 : 0} 
+                            textAnchor={isLessThan1440 ? "end" : "middle"} 
+                            interval={isXs ? Math.ceil(data.length / 6) : isMd ? Math.ceil(data.length / 8) : isLessThan1440 ? Math.ceil(data.length / 10) : Math.ceil(data.length / 15)}
+                            height={isLessThan1440 ? 70 : 40}
+                            style={{ fontSize: isXs ? '10px' : isMd ? '11px' : '13px' }}
                             tick={{ fill: '#64748b' }}
                         />
                         <YAxis allowDecimals={false} tick={{ fill: '#64748b' }} stroke="none" />

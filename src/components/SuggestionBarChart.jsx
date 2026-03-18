@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const SuggestionBarChart = ({ data }) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    const isXs = windowWidth < 480;
+    const isMd = windowWidth < 768;
+    const isLessThan1440 = windowWidth <= 1440;
 
     // Aggregate raw data by uploaded_by
     const aggregated = data.reduce((acc, item) => {
@@ -23,7 +27,7 @@ const SuggestionBarChart = ({ data }) => {
         acc[user].uploads += 1;
         acc[user].totalStars += item.stars;
         return acc;
-    }, {});
+    }, {}); 
 
     const chartData = Object.values(aggregated).sort(
         (a, b) => (a.uploads - b.uploads) || (a.stars - b.stars)
@@ -33,20 +37,20 @@ const SuggestionBarChart = ({ data }) => {
             <p className="font-semibold text-slate-800 text-center py-2">
                 Top Suggestion Uploading Users
             </p>
-            <div className="w-full h-[300px]">
+            <div className="w-full h-75 sm:h-87.5 lg:h-100">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={chartData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: isMobile ? 60 : 30 }}
+                        margin={{ top: 20, right: 10, left: 10, bottom: isLessThan1440 ? 80 : 30 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             dataKey="uploaded_by"
-                            angle={isMobile ? -45 : 0}
-                            textAnchor={isMobile ? "end" : "middle"}
-                            interval={isMobile ? 0 : "preserveEnd"}
-                            height={isMobile ? 70 : 40}
-                            style={{ fontSize: isMobile ? '11px' : '13px', fontWeight: isMobile ? 400 : 500 }}
+                            angle={isLessThan1440 ? -45 : 0}
+                            textAnchor={isLessThan1440 ? "end" : "middle"}
+                            interval={isLessThan1440 ? "preserveEnd" : 0}
+                            height={isLessThan1440 ? 80 : 40}
+                            style={{ fontSize: isXs ? '10px' : isMd ? '11px' : '13px', fontWeight: isLessThan1440 ? 400 : 500 }}
                         />
                         <YAxis yAxisId="left" orientation="left" stroke="#8884d8" allowDecimals={false} />
                         <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" allowDecimals={false} />

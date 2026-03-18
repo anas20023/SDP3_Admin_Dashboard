@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LogOut, Menu, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Menu, ChevronLeft, ChevronRight, X, AlertTriangle, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import roles from "../../utils/userRoles";
+import { toast } from "react-hot-toast";
 
 const Dashboard = () => {
   const { logout, user } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const roleKey = user?.role || "user";
   const roleConfig = roles[roleKey] || roles.user;
@@ -14,6 +17,22 @@ const Dashboard = () => {
   const menuItems = roleConfig.menu;
 
   const toggleSidebar = () => setCollapsed((prev) => !prev);
+
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
+  };
 
   return (
     <div className="drawer lg:drawer-open">
@@ -121,7 +140,7 @@ const Dashboard = () => {
 
           {/* Logout */}
           <button
-            onClick={logout}
+            onClick={handleLogoutClick}
             className={`btn btn-error mt-auto ${collapsed ? "btn-square" : ""
               }`}
           >
@@ -130,6 +149,56 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {isLogoutModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box max-w-sm bg-white border border-gray-100 shadow-2xl">
+            <div className="flex flex-col items-center text-center py-4">
+              <div className="bg-error/10 p-4 rounded-full mb-4 text-error">
+                <AlertTriangle size={36} />
+              </div>
+              <h3 className="font-bold text-xl text-gray-800">Confirm Logout</h3>
+              <p className="py-4 text-gray-600">
+                Are you sure you want to end your session? You'll need to log in again to access the dashboard.
+              </p>
+            </div>
+            
+            <div className="flex gap-3 justify-center mt-4">
+              <button 
+                className="btn btn-ghost flex-1 text-gray-500"
+                onClick={() => !isLoggingOut && setIsLogoutModalOpen(false)}
+                disabled={isLoggingOut}
+              >
+                Cancel
+              </button>
+              <button 
+                className={`btn btn-error flex-1 gap-2 ${isLoggingOut ? 'loading' : ''}`}
+                onClick={confirmLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  <LogOut size={18} />
+                )}
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="modal-backdrop bg-black/40 backdrop-blur-sm" onClick={() => !isLoggingOut && setIsLogoutModalOpen(false)}></div>
+        </div>
+      )}
+
+      {/* Full Page Loading Overlay during Logout */}
+      {isLoggingOut && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/60 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <p className="font-medium text-gray-700">Logging you out safely...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

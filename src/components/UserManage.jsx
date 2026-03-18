@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { UserCog, Trash2, Edit, Users, ShieldCheck, GraduationCap, School } from 'lucide-react';
+import { UserCog, Trash2, Edit, Users, ShieldCheck, GraduationCap, School, X, Save } from 'lucide-react';
 import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
+import { toast } from 'react-hot-toast';
 
 const UserManage = () => {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingUser, setEditingUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    role: '',
+    dept: '',
+    intake: '',
+    section: ''
+  });
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['users'],
@@ -19,9 +28,41 @@ const UserManage = () => {
     mutationFn: manageApi.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
-      alert('User deleted successfully');
+      toast.success('User deleted successfully');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to delete user');
+    }
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => manageApi.updateUser(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      toast.success('User updated successfully');
+      setIsModalOpen(false);
+      setEditingUser(null);
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to update user');
+    }
+  });
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setFormData({
+      role: user.role || 'student',
+      dept: user.dept || '',
+      intake: user.intake || '',
+      section: user.section || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateSubmit = (e) => {
+    e.preventDefault();
+    updateMutation.mutate({ id: editingUser._id, data: formData });
+  };
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
@@ -45,7 +86,7 @@ const UserManage = () => {
     <div className="flex justify-end gap-2">
       <button 
         className="btn btn-ghost btn-xs text-info hover:bg-info/10"
-        onClick={() => alert(`Edit role/info for ${user.name} (to be implemented)`)}
+        onClick={() => handleEdit(user)}
         title="Edit Role/Info"
       >
         <UserCog size={16} />
@@ -98,6 +139,106 @@ const UserManage = () => {
           actions={actions}
         />
       </div>
+
+      {/* Edit User Modal */}
+      {isModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box max-w-md bg-white border border-gray-100 shadow-2xl">
+            <button 
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <X size={20} />
+            </button>
+            
+            <h3 className="font-bold text-lg mb-6 flex items-center gap-2 text-gray-800">
+              <UserCog className="text-primary" />
+              Update User Details
+            </h3>
+
+            <form onSubmit={handleUpdateSubmit} className="space-y-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium text-gray-700">Role</span>
+                </label>
+                <select 
+                  className="select select-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  value={formData.role}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  required
+                >
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="mod">Moderator</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-medium text-gray-700">Department</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. CSE, EEE"
+                    className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    value={formData.dept}
+                    onChange={(e) => setFormData({ ...formData, dept: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="form-control w-full">
+                    <label className="label">
+                      <span className="label-text font-medium text-gray-700">Intake</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. 48, 49"
+                      className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      value={formData.intake}
+                      onChange={(e) => setFormData({ ...formData, intake: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-control w-full">
+                    <label className="label">
+                      <span className="label-text font-medium text-gray-700">Section</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. 1, 2"
+                      className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      value={formData.section}
+                      onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-action mt-8">
+                <button 
+                  type="button" 
+                  className="btn btn-ghost text-gray-500"
+                  onClick={() => setIsModalOpen(false)}
+                  disabled={updateMutation.isLoading}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className={`btn btn-primary gap-2 ${updateMutation.isLoading ? 'loading' : ''}`}
+                  disabled={updateMutation.isLoading}
+                >
+                  {!updateMutation.isLoading && <Save size={18} />}
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="modal-backdrop bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
+        </div>
+      )}
     </div>
   );
 };

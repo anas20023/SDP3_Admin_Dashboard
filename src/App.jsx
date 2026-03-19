@@ -13,6 +13,7 @@ const UserManage = lazy(() => import("./components/UserManage"))
 const SubscriptionManage = lazy(() => import("./components/SubscriptionManage"))
 const SuggestionManage = lazy(() => import("./components/SuggestionManage"))
 const TransactionManage = lazy(() => import("./components/TransactionManage"))
+const FeedbackManage = lazy(() => import("./components/FeedbackManage.jsx"))
 
 const withDashboardLoader = (component) => (
   <Suspense fallback={<DashboardRouteLoader />}>
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="subscriptions" element={withDashboardLoader(<SubscriptionManage />)} />
                 <Route path="suggestions" element={withDashboardLoader(<SuggestionManage />)} />
                 <Route path="transactions" element={withDashboardLoader(<TransactionManage />)} />
+                <Route path="feedbacks" element={withDashboardLoader(<FeedbackManage />)} />
               </Route>
             </Route>
 

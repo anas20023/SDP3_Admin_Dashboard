@@ -30,6 +30,11 @@ export const manageApi = {
     api.patch(`/subsc/${id}`, data).then((res) => res.data)
   },
   deleteSubscription: (id) => api.delete('/subsc/', { data: { id } }).then((res) => res.data),
+  
+  // Feedbacks
+  getFeedbacks: () => api.get('/feedback').then(res => res.data),
+  updateFeedback: (id, data) => api.put(`/feedback/${id}`, data).then(res => res.data),
+  deleteFeedback: (id) => api.delete(`/feedback/${id}`).then(res => res.data),
 };
 
 export default api;

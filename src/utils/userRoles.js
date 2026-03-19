@@ -2,11 +2,12 @@ import {
   Home,
   Users,
   Settings,
-  TableProperties ,
+  TableProperties,
   User,
   Crown,
-  Presentation,CircleDollarSign,
-  ShieldCheck 
+  Presentation, CircleDollarSign,
+  ShieldCheck,
+  MessageSquareCheck
 } from "lucide-react";
 
 const roles = {
@@ -28,7 +29,8 @@ const roles = {
       { to: "/dashboard/users", label: "Users", icon: Users },
       { to: "/dashboard/subscriptions", label: "Subscriptions", icon: TableProperties },
       { to: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
-      { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
+      { to: "/dashboard/suggestions", label: "Moderation", icon: ShieldCheck },
+      { to: "/dashboard/feedbacks", label: "Feedbacks", icon: MessageSquareCheck }
     ]
   },
 
@@ -44,7 +46,7 @@ const roles = {
 
     menu: [
       { to: "/dashboard", label: "Dashboard", icon: Home },
-      { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
+      { to: "/dashboard/suggestions", label: "Moderation", icon: ShieldCheck }
     ]
   },
 
@@ -62,7 +64,8 @@ const roles = {
     menu: [
       { to: "/dashboard", label: "Dashboard", icon: Home },
       { to: "/dashboard/users", label: "Users", icon: Users },
-      { to: "/dashboard/suggestions", label: "Suggestions", icon: ShieldCheck }
+      { to: "/dashboard/suggestions", label: "Moderation", icon: ShieldCheck },
+      { to: "/dashboard/feedbacks", label: "Feedbacks", icon: MessageSquareCheck }
     ]
   },
 

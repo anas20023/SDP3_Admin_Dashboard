@@ -5,9 +5,11 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
+import { useToast } from '../context/ToastContext';
 import SuggestionModal from './SuggestionModal';
 
 const SuggestionManage = () => {
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -32,16 +34,22 @@ const SuggestionManage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['suggestions']);
       queryClient.invalidateQueries(['suggestion', selectedId]);
-      alert('Status updated successfully');
+      showToast('Status updated successfully', 'success');
     },
+    onError: (err) => {
+      showToast(err.response?.data?.message || 'Failed to update status', 'error');
+    }
   });
 
   const deleteMutation = useMutation({
     mutationFn: manageApi.deleteSuggestion,
     onSuccess: () => {
       queryClient.invalidateQueries(['suggestions']);
-      alert('Suggestion deleted successfully');
+      showToast('Suggestion deleted successfully', 'success');
     },
+    onError: (err) => {
+      showToast(err.response?.data?.message || 'Failed to delete suggestion', 'error');
+    }
   });
 
   const handleApprove = (id) => {

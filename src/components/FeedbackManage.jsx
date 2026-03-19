@@ -5,9 +5,10 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
-import { toast } from 'react-hot-toast';
+import { useToast } from '../context/ToastContext';
 
 const FeedbackManage = () => {
+    const { showToast } = useToast();
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
@@ -21,10 +22,10 @@ const FeedbackManage = () => {
         mutationFn: manageApi.deleteFeedback,
         onSuccess: () => {
             queryClient.invalidateQueries(['feedbacks']);
-            toast.success('Feedback deleted successfully');
+            showToast('Feedback deleted successfully', 'success');
         },
         onError: (err) => {
-            toast.error(err.response?.data?.message || 'Failed to delete feedback');
+            showToast(err.response?.data?.message || 'Failed to delete feedback', 'error');
         }
     });
 

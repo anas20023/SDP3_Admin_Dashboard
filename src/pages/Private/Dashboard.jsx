@@ -3,9 +3,10 @@ import { NavLink, Outlet } from "react-router-dom";
 import { LogOut, Menu, ChevronLeft, ChevronRight, X, AlertTriangle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import roles from "../../utils/userRoles";
-import { toast } from "react-hot-toast";
+import { useToast } from "../../context/ToastContext";
 
 const Dashboard = () => {
+  const { showToast } = useToast();
   const { logout, user } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -26,10 +27,10 @@ const Dashboard = () => {
     setIsLoggingOut(true);
     try {
       await logout();
-      toast.success("Logged out successfully");
+      showToast("Logged out successfully", "success");
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      toast.error("Logout failed. Please try again.");
+      showToast("Logout failed. Please try again.", "error");
       setIsLoggingOut(false);
       setIsLogoutModalOpen(false);
     }

@@ -13,7 +13,7 @@ const UserManage = lazy(() => import("./components/UserManage"))
 const SubscriptionManage = lazy(() => import("./components/SubscriptionManage"))
 const SuggestionManage = lazy(() => import("./components/SuggestionManage"))
 const TransactionManage = lazy(() => import("./components/TransactionManage"))
-const FeedbackManage = lazy(() => import("./components/FeedbackManage.jsx"))
+const FeedbackManage = lazy(() => import("./components/FeedbackManage"))
 
 const withDashboardLoader = (component) => (
   <Suspense fallback={<DashboardRouteLoader />}>

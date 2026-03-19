@@ -25,11 +25,8 @@ export const manageApi = {
   // Subscriptions
   getSubscriptions: () => api.get('/subsc').then((res) => res.data),
   createSubscription: (data) => api.post('/subsc', data).then((res) => res.data),
-  updateSubscription: (id, data) => {
-    //console.log(id,data)
-    api.patch(`/subsc/${id}`, data).then((res) => res.data)
-  },
-  deleteSubscription: (id) => api.delete('/subsc/', { data: { id } }).then((res) => res.data),
+  updateSubscription: (id, data) => api.patch(`/subsc/${id}`, data).then((res) => res.data),
+  deleteSubscription: (id) => api.delete(`/subsc/${id}`).then((res) => res.data),
   
   // Feedbacks
   getFeedbacks: () => api.get('/feedback').then(res => res.data),

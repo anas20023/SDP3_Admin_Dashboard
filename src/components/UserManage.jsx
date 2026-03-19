@@ -5,9 +5,10 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
-import { toast } from 'react-hot-toast';
+import { useToast } from '../context/ToastContext';
 
 const UserManage = () => {
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [editingUser, setEditingUser] = useState(null);
@@ -28,10 +29,10 @@ const UserManage = () => {
     mutationFn: manageApi.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
-      toast.success('User deleted successfully');
+      showToast('User deleted successfully', 'success');
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to delete user');
+      showToast(err.response?.data?.message || 'Failed to delete user', 'error');
     }
   });
 
@@ -39,12 +40,12 @@ const UserManage = () => {
     mutationFn: ({ id, data }) => manageApi.updateUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
-      toast.success('User updated successfully');
+      showToast('User updated successfully', 'success');
       setIsModalOpen(false);
       setEditingUser(null);
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to update user');
+      showToast(err.response?.data?.message || 'Failed to update user', 'error');
     }
   });
 

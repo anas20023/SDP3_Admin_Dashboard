@@ -36,12 +36,12 @@ const Analytics = () => {
     <div className="p-4 space-y-4 bg-slate-50 min-h-screen">
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <div className="lg:col-span-5 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
           {data?.userAnalytics && <UsersLast30Day data={data.userAnalytics} />}
         </div>
         
-        <div className="lg:col-span-3 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+        <div className="lg:col-span-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
           {data?.starAnalysis && <SuggestionBarChart data={data.starAnalysis} />}
         </div>
         

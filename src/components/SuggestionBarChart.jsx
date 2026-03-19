@@ -31,11 +31,11 @@ const SuggestionBarChart = ({ data }) => {
 
     const chartData = Object.values(aggregated).sort(
         (a, b) => (a.uploads - b.uploads) || (a.stars - b.stars)
-    ).reverse();
+    ).reverse().slice(0, 3);
     return (
         <>
             <p className="font-semibold text-slate-800 text-center py-2">
-                Top Suggestion Uploading Users
+                Top 3 Suggestion Uploading Users
             </p>
             <div className="w-full h-87">
                 <ResponsiveContainer width="100%" height="100%">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LogOut, Menu, ChevronLeft, ChevronRight, X, AlertTriangle, Loader2 } from "lucide-react";
+import { LogOut, Menu, ChevronLeft, ChevronRight, X, AlertTriangle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import roles from "../../utils/userRoles";
 import { toast } from "react-hot-toast";
@@ -27,7 +27,7 @@ const Dashboard = () => {
     try {
       await logout();
       toast.success("Logged out successfully");
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       toast.error("Logout failed. Please try again.");
       setIsLoggingOut(false);
@@ -87,7 +87,7 @@ const Dashboard = () => {
           {user && (
             <div className="mb-6 flex items-center gap-3 rounded-box bg-base-100 p-3">
               <div className="avatar avatar-online avatar-placeholder">
-                <div className={`bg-neutral text-neutral-content rounded-full ${collapsed?"w-6":"w-8"}`}>
+                <div className={`bg-neutral text-neutral-content rounded-full ${collapsed ? "w-6" : "w-8"}`}>
                   <span className="text-xl">{user.name?.charAt(0).toUpperCase()}</span>
                 </div>
               </div>
@@ -164,22 +164,22 @@ const Dashboard = () => {
                 Are you sure you want to end your session? You'll need to log in again to access the dashboard.
               </p>
             </div>
-            
+
             <div className="flex gap-3 justify-center mt-4">
-              <button 
+              <button
                 className="btn btn-ghost flex-1 text-gray-500"
                 onClick={() => !isLoggingOut && setIsLogoutModalOpen(false)}
                 disabled={isLoggingOut}
               >
                 Cancel
               </button>
-              <button 
-                className={`btn btn-error flex-1 gap-2 ${isLoggingOut ? 'loading' : ''}`}
+              <button
+                className="btn btn-error flex-1 gap-2"
                 onClick={confirmLogout}
                 disabled={isLoggingOut}
               >
                 {isLoggingOut ? (
-                  <Loader2 className="animate-spin" size={18} />
+                  <span className="loading loading-spinner loading-md"></span>
                 ) : (
                   <LogOut size={18} />
                 )}

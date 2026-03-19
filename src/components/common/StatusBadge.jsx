@@ -1,11 +1,17 @@
-import React from 'react';
-
 const StatusBadge = ({ status }) => {
   const getStatusConfig = (status) => {
     switch (status?.toLowerCase()) {
       case 'approved':
       case 'active':
         return { color: 'badge-success', label: 'Approved' };
+      case 'feature':
+        return { color: 'badge-success', label: 'Feature' };
+      case 'bug':
+        return { color: 'badge-error', label: 'Bug' };
+      case 'content':
+        return { color: 'badge-warning', label: 'Content' };
+      case 'others':
+        return { color: 'badge-info', label: 'Others' };
       case 'pending':
         return { color: 'badge-warning', label: 'Pending' };
       case 'rejected':

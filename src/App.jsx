@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { lazy, Suspense } from "react"
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 import Login from "./pages/Public/Login"
 import { ToastProvider } from "./context/ToastContext"
 import { AuthProvider } from "./context/AuthContext"
@@ -50,6 +51,7 @@ const App = () => {
           </Routes>
         </AuthProvider>
       </ToastProvider>
+      <VercelAnalytics />
     </BrowserRouter>
   )
 }

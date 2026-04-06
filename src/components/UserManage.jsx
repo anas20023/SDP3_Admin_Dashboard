@@ -14,6 +14,9 @@ const UserManage = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    name: '',
+    user_id: '',
+    email: '',
     role: '',
     dept: '',
     intake: '',
@@ -38,20 +41,36 @@ const UserManage = () => {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => manageApi.updateUser(id, data),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries(['users']);
+      const previousUsers = queryClient.getQueryData(['users']);
+      queryClient.setQueryData(['users'], old => 
+        old?.map(user => user._id === id ? { ...user, ...data } : user)
+      );
+      return { previousUsers };
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
       showToast('User updated successfully', 'success');
       setIsModalOpen(false);
       setEditingUser(null);
     },
-    onError: (err) => {
+    onError: (err, variables, context) => {
+      if (context?.previousUsers) {
+        queryClient.setQueryData(['users'], context.previousUsers);
+      }
       showToast(err.response?.data?.message || 'Failed to update user', 'error');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['users']);
     }
   });
 
   const handleEdit = (user) => {
     setEditingUser(user);
     setFormData({
+      name: user.name || '',
+      user_id: user.user_id || '',
+      email: user.email || '',
       role: user.role || 'student',
       dept: user.dept || '',
       intake: user.intake || '',
@@ -158,6 +177,49 @@ const UserManage = () => {
             </h3>
 
             <form onSubmit={handleUpdateSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-medium text-gray-700">Name</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="User Name"
+                    className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-medium text-gray-700">User ID</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="Student/Teacher ID"
+                    className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    value={formData.user_id}
+                    onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium text-gray-700">Email</span>
+                </label>
+                <input 
+                  type="email" 
+                  placeholder="Email Address"
+                  className="input input-bordered w-full bg-slate-50 border-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">Role</span>

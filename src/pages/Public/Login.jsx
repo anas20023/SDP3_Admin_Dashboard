@@ -14,6 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+
   // Validation functions
   const validateEmail = (value) => {
     if (!value) return 'Email is required';
@@ -67,95 +68,87 @@ const Login = () => {
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      {/* Card container */}
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <h2 className="text-3xl font-bold text-blue-600 mb-2 text-center">SuggestMe</h2>
-        <p className="text-gray-600 mb-8 text-center text-sm">Please enter your details to sign in.</p>
+    <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
+      {/* Card container with DaisyUI card styles */}
+      <div className="card w-full max-w-md shadow-2xl bg-base-100 rounded-2xl">
+        <div className="card-body p-8">
+          <h2 className="text-3xl font-bold text-primary text-center mb-2">SuggestMe</h2>
+          <p className="text-base-content/70 text-center text-sm mb-6">
+            Please enter your details to sign in.
+          </p>
 
-        <form onSubmit={handleSubmit} noValidate>
-          {/* Email Field */}
-          <div className="mb-5">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-              disabled={isLoading}
-              onBlur={() => setErrors((prev) => ({ ...prev, email: validateEmail(email) }))}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                errors.email
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-              } focus:outline-none focus:ring-2 transition duration-200 disabled:bg-gray-50 disabled:text-gray-500`}
-              placeholder="you@example.com"
-              aria-invalid={!!errors.email}
-              aria-describedby="email-error"
-            />
-            {errors.email && (
-              <p id="email-error" className="text-red-600 text-sm mt-1">
-                {errors.email}
-              </p>
-            )}
-          </div>
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Email Field */}
+            <div className="form-control mb-4">
+              <label className="label">
+                <span className="label-text font-medium">Email</span>
+              </label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={handleEmailChange}
+                onBlur={() => setErrors((prev) => ({ ...prev, email: validateEmail(email) }))}
+                disabled={isLoading}
+                className={`input input-bordered w-full ${errors.email ? 'input-error' : ''} focus:outline-none`}
+                aria-invalid={!!errors.email}
+                aria-describedby="email-error"
+              />
+              {errors.email && (
+                <label className="label">
+                  <span id="email-error" className="label-text-alt text-error">
+                    {errors.email}
+                  </span>
+                </label>
+              )}
+            </div>
 
-          {/* Password Field */}
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-              disabled={isLoading}
-              onBlur={() => setErrors((prev) => ({ ...prev, password: validatePassword(password) }))}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                errors.password
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-              } focus:outline-none focus:ring-2 transition duration-200 disabled:bg-gray-50 disabled:text-gray-500`}
-              placeholder="••••••••"
-              aria-invalid={!!errors.password}
-              aria-describedby="password-error"
-            />
-            {errors.password && (
-              <p id="password-error" className="text-red-600 text-sm mt-1">
-                {errors.password}
-              </p>
-            )}
-          </div>
+            {/* Password Field */}
+            <div className="form-control mb-6">
+              <label className="label">
+                <span className="label-text font-medium">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={handlePasswordChange}
+                onBlur={() => setErrors((prev) => ({ ...prev, password: validatePassword(password) }))}
+                disabled={isLoading}
+                className={`input input-bordered w-full ${errors.password ? 'input-error' : ''} focus:outline-none`}
+                aria-invalid={!!errors.password}
+                aria-describedby="password-error"
+              />
+              {errors.password && (
+                <label className="label">
+                  <span id="password-error" className="label-text-alt text-error">
+                    {errors.password}
+                  </span>
+                </label>
+              )}
+            </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full btn btn-primary"
-          >
-            {isLoading ? (
-              <>
-                <span className="loading loading-spinner loading-xs"></span>
-                <span>Signing in...</span>
-              </>
-            ) : (
-              'Sign in'
-            )}
-          </button>
+            {/* Submit Button */}
+            <button type="submit" disabled={isLoading} className="btn btn-primary w-full">
+              {isLoading ? (
+                <>
+                  <span className="loading loading-spinner loading-xs"></span>
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
+            </button>
 
-
-          {/* Helper links */}
-          <div className="flex items-center justify-center mt-6 text-sm">
-            <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-800 transition">
-              Forgot password?
-            </a>
-          </div>
-        </form>
+            {/* Helper links */}
+            <div className="flex items-center justify-center mt-6 text-sm">
+              <a href="/forgot-password" className="link link-primary link-hover">
+                Forgot password?
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

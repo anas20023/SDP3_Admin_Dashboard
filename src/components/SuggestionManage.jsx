@@ -5,11 +5,11 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
-import { useToast } from '../context/ToastContext';
 import SuggestionModal from './SuggestionModal';
+import { toast } from 'react-toastify';
+import ConfirmModal from './common/ConfirmModal';
 
 const SuggestionManage = () => {
-  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -17,6 +17,10 @@ const SuggestionManage = () => {
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  
+  // Confirm Modal state
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [suggestionToDelete, setSuggestionToDelete] = useState(null);
 
   const { data: suggestions, isLoading } = useQuery({
     queryKey: ['suggestions'],
@@ -34,10 +38,10 @@ const SuggestionManage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['suggestions']);
       queryClient.invalidateQueries(['suggestion', selectedId]);
-      showToast('Status updated successfully', 'success');
+      toast.success('Status updated successfully');
     },
     onError: (err) => {
-      showToast(err.response?.data?.message || 'Failed to update status', 'error');
+      toast.error(err.response?.data?.message || 'Failed to update status');
     }
   });
 
@@ -45,10 +49,13 @@ const SuggestionManage = () => {
     mutationFn: manageApi.deleteSuggestion,
     onSuccess: () => {
       queryClient.invalidateQueries(['suggestions']);
-      showToast('Suggestion deleted successfully', 'success');
+      toast.success('Suggestion deleted successfully');
+      setIsConfirmOpen(false);
+      setSuggestionToDelete(null);
     },
     onError: (err) => {
-      showToast(err.response?.data?.message || 'Failed to delete suggestion', 'error');
+      toast.error(err.response?.data?.message || 'Failed to delete suggestion');
+      setIsConfirmOpen(false);
     }
   });
 
@@ -61,8 +68,13 @@ const SuggestionManage = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this suggestion?')) {
-      deleteMutation.mutate(id);
+    setSuggestionToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (suggestionToDelete) {
+      deleteMutation.mutate(suggestionToDelete);
     }
   };
 
@@ -178,6 +190,15 @@ const SuggestionManage = () => {
         onClose={closeModal}
         suggestion={selectedSuggestion}
         isLoading={detailsLoading}
+      />
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete Suggestion"
+        message="Are you sure you want to delete this suggestion? This action cannot be undone."
+        isLoading={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
       />
     </div>
   );

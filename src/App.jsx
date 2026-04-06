@@ -2,8 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { lazy, Suspense } from "react"
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 import Login from "./pages/Public/Login"
-import { ToastProvider } from "./context/ToastContext"
 import { AuthProvider } from "./context/AuthContext"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import ProtectedRoute from "./components/ProtectedRoute"
 import PublicRoute from "./components/PublicRoute"
 import DashboardRouteLoader from "./components/common/DashboardRouteLoader"
@@ -25,8 +26,7 @@ const withDashboardLoader = (component) => (
 const App = () => {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <AuthProvider>
+      <AuthProvider>
           <Routes>
             {/* Public Routes */}
             <Route element={<PublicRoute />}>
@@ -45,12 +45,10 @@ const App = () => {
               </Route>
             </Route>
 
-            {/* Fallback Routes */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </AuthProvider>
-      </ToastProvider>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
       <VercelAnalytics />
     </BrowserRouter>
   )

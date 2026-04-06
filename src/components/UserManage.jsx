@@ -5,14 +5,16 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
-import { useToast } from '../context/ToastContext';
+import { toast } from 'react-toastify';
+import ConfirmModal from './common/ConfirmModal';
 
 const UserManage = () => {
-  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [editingUser, setEditingUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedUserToDelete, setSelectedUserToDelete] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     user_id: '',
@@ -32,10 +34,13 @@ const UserManage = () => {
     mutationFn: manageApi.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
-      showToast('User deleted successfully', 'success');
+      toast.success('User deleted successfully');
+      setIsConfirmOpen(false);
+      setSelectedUserToDelete(null);
     },
     onError: (err) => {
-      showToast(err.response?.data?.message || 'Failed to delete user', 'error');
+      toast.error(err.response?.data?.message || 'Failed to delete user');
+      setIsConfirmOpen(false);
     }
   });
 
@@ -50,7 +55,7 @@ const UserManage = () => {
       return { previousUsers };
     },
     onSuccess: () => {
-      showToast('User updated successfully', 'success');
+      toast.success('User updated successfully');
       setIsModalOpen(false);
       setEditingUser(null);
     },
@@ -58,7 +63,7 @@ const UserManage = () => {
       if (context?.previousUsers) {
         queryClient.setQueryData(['users'], context.previousUsers);
       }
-      showToast(err.response?.data?.message || 'Failed to update user', 'error');
+      toast.error(err.response?.data?.message || 'Failed to update user');
     },
     onSettled: () => {
       queryClient.invalidateQueries(['users']);
@@ -85,8 +90,13 @@ const UserManage = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteMutation.mutate(id);
+    setSelectedUserToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedUserToDelete) {
+      deleteMutation.mutate(selectedUserToDelete);
     }
   };
 
@@ -284,16 +294,20 @@ const UserManage = () => {
                   type="button" 
                   className="btn btn-ghost text-gray-500"
                   onClick={() => setIsModalOpen(false)}
-                  disabled={updateMutation.isLoading}
+                  disabled={updateMutation.isPending}
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className={`btn btn-primary gap-2 ${updateMutation.isLoading ? 'loading' : ''}`}
-                  disabled={updateMutation.isLoading}
+                  className="btn btn-primary gap-2"
+                  disabled={updateMutation.isPending}
                 >
-                  {!updateMutation.isLoading && <Save size={18} />}
+                  {updateMutation.isPending ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <Save size={18} />
+                  )}
                   Save Changes
                 </button>
               </div>
@@ -302,6 +316,15 @@ const UserManage = () => {
           <div className="modal-backdrop bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
         </div>
       )}
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        isLoading={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 };

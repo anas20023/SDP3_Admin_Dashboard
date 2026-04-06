@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import handleLogin from '../../utils/login';
-import { useToast } from '../../context/ToastContext';
+import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
@@ -14,8 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
-
   // Validation functions
   const validateEmail = (value) => {
     if (!value) return 'Email is required';
@@ -52,7 +50,7 @@ const Login = () => {
 
     if (emailError || passwordError) {
       setErrors({ email: emailError, password: passwordError });
-      showToast('Please fix the errors in the form.', 'error');
+      toast.error('Please fix the errors in the form.');
       return;
     }
 
@@ -60,10 +58,10 @@ const Login = () => {
     try {
       const userData = await handleLogin({ email, password });
       login(userData);
-      showToast('Login successful! Redirecting...', 'success');
+      toast.success('Login successful! Redirecting...');
       navigate('/dashboard', { replace: true });
     } catch (error) {
-      showToast(error.message || 'Login failed. Please check your credentials.', 'error');
+      toast.error(error.message || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }

@@ -5,13 +5,16 @@ import { manageApi } from '../services/api';
 import DataTable from './common/DataTable';
 import StatsCard from './common/StatsCard';
 import StatusBadge from './common/StatusBadge';
-import { useToast } from '../context/ToastContext';
+import { toast } from 'react-toastify';
+import ConfirmModal from './common/ConfirmModal';
 
 const FeedbackManage = () => {
-    const { showToast } = useToast();
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [feedbackToDelete, setFeedbackToDelete] = useState(null);
 
     const { data: feedbacks, isLoading } = useQuery({
         queryKey: ['feedbacks'],
@@ -22,16 +25,24 @@ const FeedbackManage = () => {
         mutationFn: manageApi.deleteFeedback,
         onSuccess: () => {
             queryClient.invalidateQueries(['feedbacks']);
-            showToast('Feedback deleted successfully', 'success');
+            toast.success('Feedback deleted successfully');
+            setIsConfirmOpen(false);
+            setFeedbackToDelete(null);
         },
         onError: (err) => {
-            showToast(err.response?.data?.message || 'Failed to delete feedback', 'error');
+            toast.error(err.response?.data?.message || 'Failed to delete feedback');
+            setIsConfirmOpen(false);
         }
     });
 
     const handleDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this feedback?')) {
-            deleteMutation.mutate(id);
+        setFeedbackToDelete(id);
+        setIsConfirmOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (feedbackToDelete) {
+            deleteMutation.mutate(feedbackToDelete);
         }
     };
 
@@ -154,6 +165,15 @@ const FeedbackManage = () => {
                     actions={actions}
                 />
             </div>
+
+            <ConfirmModal 
+                isOpen={isConfirmOpen}
+                title="Delete Feedback"
+                message="Are you sure you want to delete this feedback? This action cannot be undone."
+                isLoading={deleteMutation.isPending}
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+            />
         </div>
     );
 };

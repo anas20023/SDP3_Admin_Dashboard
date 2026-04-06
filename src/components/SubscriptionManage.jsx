@@ -12,8 +12,8 @@ import {
 import { manageApi } from "../services/api";
 import DataTable from "./common/DataTable";
 import StatsCard from "./common/StatsCard";
-import { useToast } from "../context/ToastContext";
-
+import { toast } from "react-toastify";
+import ConfirmModal from "./common/ConfirmModal";
 const defaultForm = {
   name: "",
   price: 0,
@@ -198,9 +198,13 @@ const SubscriptionModal = ({
 
 const SubscriptionManage = () => {
   const queryClient = useQueryClient();
-  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Confirm Modal state
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState(null);
+
   const [editingSubscription, setEditingSubscription] = useState(null);
   const [form, setForm] = useState(defaultForm);
 
@@ -228,13 +232,12 @@ const SubscriptionManage = () => {
     mutationFn: manageApi.createSubscription,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
-      showToast("Subscription plan created successfully", "success");
+      toast.success("Subscription plan created successfully");
       handleCloseModal();
     },
     onError: (mutationError) => {
-      showToast(
-        mutationError?.response?.data?.message || "Failed to create subscription plan",
-        "error"
+      toast.error(
+        mutationError?.response?.data?.message || "Failed to create subscription plan"
       );
     },
   });
@@ -243,13 +246,12 @@ const SubscriptionManage = () => {
     mutationFn: ({ id, data }) => manageApi.updateSubscription(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
-      showToast("Subscription plan updated successfully", "success");
+      toast.success("Subscription plan updated successfully");
       handleCloseModal();
     },
     onError: (mutationError) => {
-      showToast(
-        mutationError?.response?.data?.message || "Failed to update subscription plan",
-        "error"
+      toast.error(
+        mutationError?.response?.data?.message || "Failed to update subscription plan"
       );
     },
   });
@@ -258,13 +260,15 @@ const SubscriptionManage = () => {
     mutationFn: manageApi.deleteSubscription,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
-      showToast("Subscription plan deleted successfully", "success");
+      toast.success("Subscription plan deleted successfully");
+      setIsConfirmOpen(false);
+      setSubscriptionToDelete(null);
     },
     onError: (mutationError) => {
-      showToast(
-        mutationError?.response?.data?.message || "Failed to delete subscription plan",
-        "error"
+      toast.error(
+        mutationError?.response?.data?.message || "Failed to delete subscription plan"
       );
+      setIsConfirmOpen(false);
     },
   });
 
@@ -290,8 +294,13 @@ const SubscriptionManage = () => {
   };
 
   const handleDelete = (subscription) => {
-    if (window.confirm(`Delete "${subscription.name}" subscription plan?`)) {
-      deleteMutation.mutate(subscription._id);
+    setSubscriptionToDelete(subscription);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (subscriptionToDelete) {
+      deleteMutation.mutate(subscriptionToDelete._id);
     }
   };
 
@@ -311,7 +320,7 @@ const SubscriptionManage = () => {
     };
 
     if (!payload.name || payload.features.length === 0) {
-      showToast("Name and at least one feature are required", "warning");
+      toast.warning("Name and at least one feature are required");
       return;
     }
 
@@ -453,6 +462,15 @@ const SubscriptionManage = () => {
         setForm={setForm}
         isSaving={createMutation.isPending || updateMutation.isPending}
         mode={editingSubscription ? "edit" : "create"}
+      />
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete Plan"
+        message={`Are you sure you want to delete the "${subscriptionToDelete?.name}" subscription plan? This action cannot be undone.`}
+        isLoading={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
       />
     </div>
   );

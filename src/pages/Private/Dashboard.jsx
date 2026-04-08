@@ -84,29 +84,33 @@ const Dashboard = () => {
 
         <div className={`flex min-h-full flex-col bg-base-300 p-4 transition-all duration-300 ${collapsed ? "w-20 overflow-x-hidden" : "w-64"}`}>
           {/* User Profile */}
-          {user && (
-            <div className="mb-6 flex items-center gap-3 rounded-box bg-base-100 p-3">
-              <div className="avatar avatar-online avatar-placeholder">
-                <div className={`bg-neutral text-neutral-content rounded-full ${collapsed ? "w-6" : "w-8"}`}>
-                  <span className="text-xl">{user.name?.charAt(0).toUpperCase()}</span>
-                </div>
-              </div>
+                {user && (
+                <div className="mb-6 flex items-center gap-3 rounded-box bg-base-100 p-3">
+                  <div className="avatar avatar-online avatar-placeholder">
+                  <div className={`bg-neutral text-neutral-content rounded-full ${collapsed ? "w-6" : "w-8"}`}>
+                    {user.img_url ? (
+                    <img src={user.img_url} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                    <span className="text-xl">{user.name?.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  </div>
 
-              <div
-                className={`overflow-hidden transition-all ${collapsed ? "hidden" : "block"
-                  }`}
-              >
-                <div className="font-semibold truncate text-base-content">
-                  {user.name}
+                  <div
+                  className={`overflow-hidden transition-all ${collapsed ? "hidden" : "block"
+                    }`}
+                  >
+                  <div className="font-semibold truncate text-base-content">
+                    {user.name}
+                  </div>
+                  <div className="text-xs opacity-70 text-base-content/70">
+                    {user.email}
+                  </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-70 text-base-content/70">
-                  {user.email}
-                </div>
-              </div>
-            </div>
-          )}
+                )}
 
-          {/* Menu */}
+                {/* Menu */}
           <ul className="menu menu-vertical w-full gap-1 p-0">
             {menuItems.map((item) => {
               const Icon = item.icon;

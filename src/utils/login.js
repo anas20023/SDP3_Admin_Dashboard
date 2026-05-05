@@ -10,7 +10,7 @@ const handleLogin = async ({ email, password }) => {
     return res.data;
   } catch (error) {
     //console.error("Login error:", error.response?.data || error.message);
-    throw new Error(error.response?.data || error.message || "Incorrect Email or Password ");
+    throw new Error(error.response?.data?.message || error.message || "Incorrect Email or Password");
   }
 };
 
